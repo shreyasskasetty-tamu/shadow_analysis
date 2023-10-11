@@ -1,0 +1,14 @@
+2023-10-10 19:59:59,871 INFO werkzeug MainThread : [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://10.183.20.233:5001
+2023-10-10 19:59:59,871 INFO werkzeug MainThread : [33mPress CTRL+C to quit[0m
+2023-10-10 19:59:59,871 INFO werkzeug MainThread :  * Restarting with stat
+2023-10-10 20:00:00,379 WARNING werkzeug MainThread :  * Debugger is active!
+2023-10-10 20:00:00,389 INFO werkzeug MainThread :  * Debugger PIN: 138-043-387
+2023-10-10 20:00:11,914 INFO root Thread-2 (process_request_thread) : Received request for solar_position
+2023-10-10 20:00:11,928 INFO root Thread-2 (process_request_thread) : Returning solar_data: {'timestamp': ['2023-09-12 11:00:00'], 'elevation': 58.47573454101022, 'zenith': 31.52426545898978, 'apparent_elevation': 58.48605642481938, 'apparent_zenith': 31.51394357518062, 'equation_of_time': 3.713014588895021, 'azimuth': 140.7400183312605}
+2023-10-10 20:00:11,928 INFO werkzeug Thread-2 (process_request_thread) : 127.0.0.1 - - [10/Oct/2023 20:00:11] "POST /api/v1/shadow_analysis/solar-position HTTP/1.1" 200 -
+2023-10-10 20:00:27,219 INFO root Thread-3 (process_request_thread) : Received request for solar_position
+2023-10-10 20:00:27,228 INFO root Thread-3 (process_request_thread) : Returning solar_data: {'timestamp': ['2023-09-12 11:00:00'], 'elevation': 58.47573454101022, 'zenith': 31.52426545898978, 'apparent_elevation': 58.48605642481938, 'apparent_zenith': 31.51394357518062, 'equation_of_time': 3.713014588895021, 'azimuth': 140.7400183312605}
+2023-10-10 20:00:27,229 INFO werkzeug Thread-3 (process_request_thread) : 127.0.0.1 - - [10/Oct/2023 20:00:27] "POST /api/v1/shadow_analysis/solar-position HTTP/1.1" 200 -

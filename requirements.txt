@@ -1,0 +1,8 @@
+Flask
+pymongo[srv]
+Flask-PyMongo
+numpy
+pandas
+scipy
+pvlib
+gunicorn
