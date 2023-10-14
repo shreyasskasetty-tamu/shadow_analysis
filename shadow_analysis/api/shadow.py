@@ -4,52 +4,24 @@ from flask import Blueprint, request, jsonify
 
 # from mflix.api.utils import expect
 from datetime import datetime
-from shadow_analysis.api.solarposition import get_solarposition
 import shadow_analysis.api.shadowingfunction_wallheight_13 as shadow_func
 from shadow_analysis.db import insert_shadow_result
 
 import numpy as np
 import pandas as pd
 import uuid
-import gzip 
-import json
-import base64
 import os 
 import sys
 
 shadow_analysis_api_v1 = Blueprint(
     'shadow_analysis_api_v1', 'shadow_analysis_api_v1', url_prefix='/api/v1/shadow_analysis')
 
-@shadow_analysis_api_v1.route('/hello', methods=['GET'])
-def hello():
+@shadow_analysis_api_v1.route('/test', methods=['GET'])
+def test():
     x = {
         "Name":"shreyas"
     }
     return jsonify(x)
-
-@shadow_analysis_api_v1.route('/solar-position', methods=['POST'])
-def solar_position():
-    data = request.json
-    utc_offset = -6
-    timestamps = pd.to_datetime(data['timestamp'])
-    lat = float(data['latitude'])
-    lon = float(data['longitude'])
-
-    # Calculate the solar position
-    df_solar = get_solarposition(timestamps, lat, lon)
-    timestamps = pd.DatetimeIndex(df_solar.index) + pd.DateOffset(hours=utc_offset)
-    formatted_timestamp = timestamps.strftime("%Y-%m-%d %H:%M:%S")
-    # Extract and return the solar data
-    solar_data = {
-        "timestamp": formatted_timestamp.tolist(),
-        "elevation": df_solar['elevation'].tolist(),
-        "zenith": df_solar['zenith'].tolist(),
-        "apparent_elevation": df_solar['apparent_elevation'].tolist(),
-        "apparent_zenith": df_solar['apparent_zenith'].tolist(),
-        "equation_of_time": df_solar['equation_of_time'].tolist(),
-        "azimuth": df_solar['azimuth'].tolist()
-    }
-    return jsonify(solar_data)
 
 @shadow_analysis_api_v1.route('/calculate-shadow', methods=['POST'])
 def calculate_shadow():
