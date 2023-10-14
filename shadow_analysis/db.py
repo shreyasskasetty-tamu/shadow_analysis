@@ -2,7 +2,8 @@ from flask import current_app
 from werkzeug.local import LocalProxy
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
-
+import gridfs
+import bson
 
 def get_db():
     """
@@ -25,8 +26,19 @@ def get_db():
 # Create a proxy to use the db instance
 db = LocalProxy(get_db)
 
+
 def insert_shadow_result(result):
     """
     Inserts a shadow analyis result into the shadow_data collection, with the following fields:
     """ 
-    db.shadow_data.insert_one(result)
+    fs = gridfs.GridFS(db)
+    bson_data = bson.BSON.encode(result)
+
+    if len(bson_data) > (16 * 1024 * 1024):  # Check if the data exceeds 16MB
+        # If the data is too large, store it in GridFS
+        result_id = fs.put(bson_data, filename=result['_id'])
+        print(f"Result stored in GridFS with file ID: {result_id}")
+    else:
+        # If the data size is within the limit, store it directly in the collection
+        db.shadow_data.insert_one(result)
+        print(f"Result stored in the collection with ID: {result['_id']}")
