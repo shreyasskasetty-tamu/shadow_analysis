@@ -90,7 +90,7 @@ def create_and_save_heatmap(data, cmap_name):
         minute = timestamps.minute
         f, ax = plt.subplots(dpi=500)
         # Create a heatmap using the specified colormap
-        plt.imshow(sh, cmap='inferno')
+        plt.imshow(sh, cmap=cmap_name)
 
         plt.title("%2s" % str(hour).zfill(2) + ":%2s"% str(minute).zfill(2), pad =10, fontsize=15, color="black", weight='bold' )
 
@@ -136,7 +136,7 @@ def get_visualisation_url():
 
         # List of colormaps to use
         cmap_name = 'viridis' if 'colormap' not in data_json else data_json['colormap']
-        
+        print(cmap_name)
         # Dictionary to store S3 URLs for each colormap
         colormap_url = None
 
