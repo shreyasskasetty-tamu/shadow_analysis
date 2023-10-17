@@ -1,8 +1,4 @@
 from flask import Blueprint, request, jsonify
-# from mflix.db import get_movie, get_movies, get_movies_by_country, \
-#     get_movies_faceted, add_comment, update_comment, delete_comment
-
-# from mflix.api.utils import expect
 from datetime import datetime
 import shadow_analysis.api.shadowingfunction_wallheight_13 as shadow_func
 from shadow_analysis.db import insert_shadow_result, get_sh_data
