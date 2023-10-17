@@ -100,7 +100,7 @@ def create_and_save_heatmap(data, cmap_name):
         buffer.seek(0)
 
         # Upload the image to S3
-        s3 = boto3.client('s3', aws_access_key_id='AKIA5KY6KA334LQJPJUX', aws_secret_access_key='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')
+        s3 = boto3.client('s3', aws_access_key_id='access-key', aws_secret_access_key='secret-access-key')
         bucket_name = 'visualization-bucket'
 
         file = f'heatmap_{cmap_name}.png'

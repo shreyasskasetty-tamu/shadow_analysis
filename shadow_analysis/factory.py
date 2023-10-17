@@ -26,7 +26,7 @@ def create_app():
     config.read(os.path.abspath(os.path.join(".ini")))
     app = Flask(__name__)
     app.config['MONGO_DBNAME'] = 'shadow_db'
-    app.config['SECRET_KEY'] = "3bf9eea8de958ecdc54356f31b6b5ba249629888"
+    app.config['SECRET_KEY'] = "secret-key"
     app.config['MONGO_URI'] = config['PROD']['DB_URI']
     CORS(app, resources={r"/api/*": {"origins": "*"}})
     app.json_encoder = MongoJsonEncoder
