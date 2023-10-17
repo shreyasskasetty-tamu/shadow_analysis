@@ -6,3 +6,6 @@ pandas
 scipy
 pvlib
 gunicorn
+flask-cors
+matplotlib
+boto3

@@ -3,7 +3,7 @@ import configparser
 
 from flask import Flask, render_template
 from json import JSONEncoder
-
+from flask_cors import CORS  # Import Flask-CORS
 ##from flask_bcrypt import Bcrypt
 ##from flask_jwt_extended import JWTManager
 from shadow_analysis.api.shadow import shadow_analysis_api_v1
@@ -28,6 +28,7 @@ def create_app():
     app.config['MONGO_DBNAME'] = 'shadow_db'
     app.config['SECRET_KEY'] = "3bf9eea8de958ecdc54356f31b6b5ba249629888"
     app.config['MONGO_URI'] = config['PROD']['DB_URI']
+    CORS(app, resources={r"/api/*": {"origins": "*"}})
     app.json_encoder = MongoJsonEncoder
     app.register_blueprint(shadow_analysis_api_v1)
     return app

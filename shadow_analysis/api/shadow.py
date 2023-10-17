@@ -2,7 +2,9 @@ from flask import Blueprint, request, jsonify
 from datetime import datetime
 import shadow_analysis.api.shadowingfunction_wallheight_13 as shadow_func
 from shadow_analysis.db import insert_shadow_result, get_sh_data
-
+import matplotlib.pyplot as plt
+import boto3
+from io import BytesIO
 import numpy as np
 import pandas as pd
 import uuid
@@ -77,3 +79,80 @@ def get_shadow_data():
 
     # Return the shadow data as a JSON response
     return jsonify({'shadow_data': shadow_data})
+
+# Function to create and save the heatmap image to S3
+def create_and_save_heatmap(data, cmap_name):
+    try:
+        timestamp_str = data.get("timestamp")
+        sh = data.get("sh")
+        timestamps = datetime.strptime(timestamp_str, "%Y-%m-%dT%H:%M:%S.%f")
+        hour = timestamps.hour
+        minute = timestamps.minute
+        f, ax = plt.subplots(dpi=500)
+        # Create a heatmap using the specified colormap
+        plt.imshow(sh, cmap='inferno')
+
+        plt.title("%2s" % str(hour).zfill(2) + ":%2s"% str(minute).zfill(2), pad =10, fontsize=15, color="black", weight='bold' )
+
+        # Save the plot to a BytesIO buffer
+        buffer = BytesIO()
+        plt.savefig(buffer, format='png')
+        buffer.seek(0)
+
+        # Upload the image to S3
+        s3 = boto3.client('s3', aws_access_key_id='AKIA5KY6KA334LQJPJUX', aws_secret_access_key='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')
+        bucket_name = 'visualization-bucket'
+
+        file = f'heatmap_{cmap_name}.png'
+        s3.upload_fileobj(buffer, bucket_name, file,ExtraArgs={'ACL': 'public-read'} )
+        
+        # Return the S3 URL of the uploaded image
+        return f'https://{bucket_name}.s3.amazonaws.com/{file}'
+    except Exception as e:
+        # Handle any exceptions that may occur during image creation or upload
+        print(f"Error occurred: {e}")
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
+        return None
+
+@shadow_analysis_api_v1.route('/visualize-shadow-data', methods=['POST'])
+def get_visualisation_url():
+    try:
+        print("Received request to visualize shadow")
+        print("Headers:", request.headers)
+
+        data_json = request.json
+        
+        # Ensure that data_json contains the document_id
+        if 'document_id' not in data_json:
+            return jsonify({'error': 'Missing document_id in request'}), 400
+
+        # Retrieve the document based on the provided document_id
+        document_id = data_json['document_id']
+        sh = get_sh_data(document_id)
+        if sh is None:
+            return jsonify({'error': 'Document not found'}), 404
+
+        # List of colormaps to use
+        cmap_name = 'viridis' if 'colormap' not in data_json else data_json['colormap']
+        
+        # Dictionary to store S3 URLs for each colormap
+        colormap_url = None
+
+        # Create and save the heatmap image to S3
+        s3_url = create_and_save_heatmap(sh, cmap_name)
+        
+        if s3_url is not None:
+            # Store the S3 URL in the dictionary
+            colormap_url = s3_url
+
+        if colormap_url:
+            # Return the dictionary of S3 URLs in the response
+            return jsonify(colormap_url)
+        else:
+            # Handle the case when no images were created or uploaded
+            return jsonify({'error': 'Failed to create or upload images'}), 500
+    except Exception as e:
+        # Handle any unexpected exceptions that may occur
+        return jsonify({'error': str(e)}), 500
