@@ -42,3 +42,7 @@ def insert_shadow_result(result):
         # If the data size is within the limit, store it directly in the collection
         db.shadow_data.insert_one(result)
         print(f"Result stored in the collection with ID: {result['_id']}")
+
+def get_sh_data(document_id: str):
+    result = db.shadow_data.find_one({"_id": document_id})
+    return result

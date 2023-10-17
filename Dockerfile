@@ -14,4 +14,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Specifies the command to run when the image is used as the base for another image
-CMD ["gunicorn", "--bind", "0.0.0.0:5001","-w", "2", "--threads", "2", "--timeout", "120", "shadow_analysis.factory:create_app()", "--access-logfile", "-", "--error-logfile", "-"]
+CMD ["gunicorn", "--bind", "0.0.0.0:5001","shadow_analysis.factory:create_app()", "--access-logfile", "-", "--error-logfile", "-"]

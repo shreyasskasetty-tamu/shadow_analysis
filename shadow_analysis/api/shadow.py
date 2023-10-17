@@ -5,7 +5,7 @@ from flask import Blueprint, request, jsonify
 # from mflix.api.utils import expect
 from datetime import datetime
 import shadow_analysis.api.shadowingfunction_wallheight_13 as shadow_func
-from shadow_analysis.db import insert_shadow_result
+from shadow_analysis.db import insert_shadow_result, get_sh_data
 
 import numpy as np
 import pandas as pd
@@ -18,10 +18,7 @@ shadow_analysis_api_v1 = Blueprint(
 
 @shadow_analysis_api_v1.route('/test', methods=['GET'])
 def test():
-    x = {
-        "Name":"shreyas"
-    }
-    return jsonify(x)
+    return "Shadow Analysis Service Test API Success"
 
 @shadow_analysis_api_v1.route('/calculate-shadow', methods=['POST'])
 def calculate_shadow():
@@ -64,3 +61,23 @@ def calculate_shadow():
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
         return jsonify({"error": str(e)}), 500
+    
+@shadow_analysis_api_v1.route('/get-shadow-data',methods=['POST'])
+def get_shadow_data():
+    print("Received request to calculate shadow")
+    print("Headers:", request.headers)
+
+    data_json = request.json
+
+    # Ensure that data_json contains the document_id
+    if 'document_id' not in data_json:
+        return jsonify({'error': 'Missing document_id in request'}), 400
+
+    # Retrieve the document based on the provided document_id
+    document_id = data_json['document_id']
+    shadow_data = get_sh_data(document_id)
+    if shadow_data is None:
+        return jsonify({'error': 'Document not found'}), 404
+
+    # Return the shadow data as a JSON response
+    return jsonify({'shadow_data': shadow_data})
