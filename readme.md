@@ -146,7 +146,7 @@ This endpoint allows you to retrieve and visualize shadow analysis results based
 
 **Example Response:**
 
-<img src="https://visualization-bucket.s3.amazonaws.com/heatmap_inferno.png" alt="Shadow Analysis Image" width="400" height="400">
+"https://visualization-bucket.s3.amazonaws.com/heatmap_inferno.png"
 
 `400 Bad Request`: Missing or invalid request parameters.
 
