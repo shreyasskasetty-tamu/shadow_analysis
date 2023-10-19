@@ -77,7 +77,7 @@ This endpoint allows you to calculate shadows based on the provided parameters a
 }
 ```
 
-### 3. Calculate Shadow Endpoint
+### 3. Get Shadow Data Endpoint
 #### POST `/get-shadow-data`
 **Request:**
 ```http
